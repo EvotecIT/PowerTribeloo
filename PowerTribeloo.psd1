@@ -6,7 +6,7 @@
     CompatiblePSEditions = @('Desktop', 'Core')
     Copyright            = '(c) 2011 - 2023 Przemyslaw Klys @ Evotec. All rights reserved.'
     Description          = 'PowerShell module to interact with Tribeloo'
-    FunctionsToExport    = @('Add-TribelooUser', 'Connect-TribelooUser', 'Get-TribelooUser', 'Remove-TribelooUser', 'Set-TribelooUser')
+    FunctionsToExport    = @('Connect-TribelooUser', 'Get-TribelooUser', 'New-TribelooUser', 'Remove-TribelooUser', 'Set-TribelooUser')
     GUID                 = '213a3e47-3a56-45da-93bd-9ef647dd22e2'
     ModuleVersion        = '0.0.1'
     PowerShellVersion    = '5.1'
