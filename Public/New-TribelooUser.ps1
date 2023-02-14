@@ -1,4 +1,4 @@
-﻿function Add-TribelooUser {
+﻿function New-TribelooUser {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         # [string] $ExternalId,
