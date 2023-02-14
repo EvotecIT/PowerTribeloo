@@ -16,7 +16,7 @@ schema: 2.0.0
 Get-TribelooUser [[-Id] <String>] [[-SearchUserName] <String>] [[-SearchExternalID] <String>]
  [[-Search] <String>] [[-SearchProperty] <String>] [[-SearchOperator] <String>] [[-MaxResults] <Int32>]
  [[-StartIndex] <Int32>] [[-Count] <Int32>] [[-Filter] <String>] [[-SortBy] <String>] [[-SortOrder] <String>]
- [[-Attributes] <String[]>] [<CommonParameters>]
+ [-Native] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,22 +32,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -Attributes
-{{ Fill Attributes Description }}
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases: Property
-Accepted values: id, externalId, userName, givenName, familyName, displayName, nickName, profileUrl, title, userType, emails, phoneNumbers, addresses, preferredLanguage, locale, timezone, active, groups, roles, meta, organization, employeeNumber, costCenter, division, department, manager, description
-
-Required: False
-Position: 12
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Count
 {{ Fill Count Description }}
@@ -109,6 +93,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Native
+{{ Fill Native Description }}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Search
 {{ Fill Search Description }}
 
@@ -161,7 +160,7 @@ Accept wildcard characters: False
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: id, externalId, userName, givenName, familyName, displayName, nickName, profileUrl, title, userType, emails, phoneNumbers, addresses, preferredLanguage, locale, timezone, active, groups, roles, meta, organization, employeeNumber, costCenter, division, department, manager, description, directoryId, companyId, companyLogos, custom01, custom02, custom03
+Accepted values: id, userName, givenName, familyName, displayName, nickName, emails, addresses, meta
 
 Required: False
 Position: 4
@@ -192,7 +191,7 @@ Accept wildcard characters: False
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: id, externalId, userName, givenName, familyName, displayName, nickName, profileUrl, title, userType, emails, phoneNumbers, addresses, preferredLanguage, locale, timezone, active, groups, roles, meta, organization, employeeNumber, costCenter, division, department, manager, description, directoryId, companyId, companyLogos, custom01, custom02, custom03
+Accepted values: id, userName, givenName, familyName, displayName, nickName, emails, addresses, meta
 
 Required: False
 Position: 10

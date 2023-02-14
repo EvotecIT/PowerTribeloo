@@ -17,9 +17,6 @@ Locale: en-US
 ### [Connect-TribelooUser](Connect-TribelooUser.md)
 {{ Fill in the Synopsis }}
 
-### [Get-TribelooSchema](Get-TribelooSchema.md)
-Get the schema of a federated directory.
-
 ### [Get-TribelooUser](Get-TribelooUser.md)
 {{ Fill in the Synopsis }}
 
