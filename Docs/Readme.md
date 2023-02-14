@@ -11,13 +11,13 @@ Locale: en-US
 {{ Fill in the Description }}
 
 ## PowerTribeloo Cmdlets
-### [Add-TribelooUser](Add-TribelooUser.md)
-{{ Fill in the Synopsis }}
-
 ### [Connect-TribelooUser](Connect-TribelooUser.md)
 {{ Fill in the Synopsis }}
 
 ### [Get-TribelooUser](Get-TribelooUser.md)
+{{ Fill in the Synopsis }}
+
+### [New-TribelooUser](New-TribelooUser.md)
 {{ Fill in the Synopsis }}
 
 ### [Remove-TribelooUser](Remove-TribelooUser.md)
