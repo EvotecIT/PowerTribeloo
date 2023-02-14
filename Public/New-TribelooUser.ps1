@@ -1,49 +1,13 @@
 ﻿function New-TribelooUser {
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        # [string] $ExternalId,
-        # [parameter()][string] $DirectoryID,
         [parameter(Mandatory)][string] $UserName,
         [string] $FamilyName,
         [string] $GivenName,
         [parameter(Mandatory)][string] $DisplayName,
         [string] $NickName,
-        # [string] $ProfileUrl,
         [string] $EmailAddress,
-        # [string] $EmailAddressHome,
-        # [string] $StreetAddress,
-        # [string] $City,
-        # [string] $Region,
-        # [string] $PostalCode,
-        # [string] $Country,
-        # [string] $StreetAddressHome,
-        # [string] $PostalCodeHome,
-        # [string] $CityHome,
-        # [string] $RegionHome,
-        # [string] $CountryHome,
-        # [string] $PhoneNumberWork,
-        # [string] $PhoneNumberHome,
-        # [string] $PhoneNumberMobile,
-        # [string] $PhotoUrl,
-        # [string] $ThumbnailUrl,
-        # [string] $CompanyID,
-        # [string] $CompanyLogoUrl,
-        # [string] $CompanyThumbnailUrl,
-        # [string] $PreferredLanguage,
-        # [string] $Locale,
-        # [string] $TimeZone,
-        # [string] $Title,
-        # [string] $UserType,
-        # [string] $Password,
-        # [string] $ManagerID,
-        # [string] $ManagerUserName,
-        # [string] $ManagerDisplayName,
         [switch] $Active
-        # [string] $Department,
-        # [string] $EmployeeNumber,
-        # [string] $CostCenter,
-        # [string] $Division,
-        # [string] $Description
     )
     if (-not $Script:AuthorizationTribeloo) {
         return
@@ -53,8 +17,6 @@
     $Body = [ordered] @{
         schemas       = @(
             "urn:ietf:params:scim:schemas:core:2.0:User"
-            #"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
-            #"urn:ietf:params:scim:schemas:extension:fd:2.0:User"
         )
         "userName"    = $UserName
         "name"        = [ordered] @{

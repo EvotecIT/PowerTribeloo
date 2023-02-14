@@ -7,38 +7,14 @@
         [string] $Search,
         [ValidateSet(
             'id',
-            # 'externalId',
             'userName',
             'givenName',
             'familyName',
             'displayName',
             'nickName',
-            # 'profileUrl',
-            # 'title',
-            # 'userType',
             'emails',
-            # 'phoneNumbers',
             'addresses',
-            # 'preferredLanguage',
-            # 'locale',
-            # 'timezone',
-            # 'active',
-            # 'groups',
-            # 'roles',
             'meta'
-            # 'organization',
-            # 'employeeNumber',
-            # 'costCenter',
-            # 'division',
-            # 'department',
-            # 'manager',
-            # 'description',
-            # 'directoryId',
-            # 'companyId',
-            # 'companyLogos',
-            # 'custom01',
-            # 'custom02',
-            # 'custom03'
         )]
         [string] $SearchProperty = 'userName',
         [string] $SearchOperator = 'eq',
@@ -48,38 +24,14 @@
         [string] $Filter,
         [ValidateSet(
             'id',
-            # 'externalId',
             'userName',
             'givenName',
             'familyName',
             'displayName',
             'nickName',
-            # 'profileUrl',
-            # 'title',
-            # 'userType',
             'emails',
-            # 'phoneNumbers',
             'addresses',
-            # 'preferredLanguage',
-            # 'locale',
-            # 'timezone',
-            # 'active',
-            # 'groups',
-            # 'roles',
             'meta'
-            # 'organization',
-            # 'employeeNumber',
-            # 'costCenter',
-            # 'division',
-            # 'department',
-            # 'manager',
-            # 'description',
-            # 'directoryId',
-            # 'companyId',
-            # 'companyLogos',
-            # 'custom01',
-            # 'custom02',
-            # 'custom03'
         )]
         [string] $SortBy,
         [ValidateSet('ascending', 'descending')][string] $SortOrder,
@@ -90,39 +42,15 @@
     }
 
     $ConvertAttributes = @{
-        'id'                = 'id'
-        'externalId'        = 'externalId'
-        'userName'          = 'userName'
-        'givenName'         = 'name.givenName'
-        'familyName'        = 'name.familyName'
-        'displayName'       = 'di%splayName'
-        'nickName'          = 'nickName'
-        'profileUrl'        = 'profileUrl'
-        'title'             = 'title'
-        'userType'          = 'userType'
-        'emails'            = 'emails'
-        'phoneNumbers'      = 'phoneNumbers'
-        'addresses'         = 'addresses'
-        'preferredLanguage' = 'preferredLanguage'
-        'locale'            = 'locale'
-        'timezone'          = 'timezone'
-        'active'            = 'active'
-        'groups'            = 'groups'
-        'roles'             = 'roles'
-        'meta'              = 'meta'
-        'organization'      = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:organization'
-        'employeeNumber'    = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:employeeNumber'
-        'costCenter'        = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:costCenter'
-        'division'          = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:division'
-        'department'        = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department'
-        'manager'           = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager'
-        'description'       = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:description'
-        'directoryId'       = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:directoryId'
-        'companyId'         = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:companyId'
-        'companyLogos'      = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:companyLogos'
-        'custom01'          = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:custom01'
-        'custom02'          = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:custom02'
-        'custom03'          = 'urn:ietf:params:scim:schemas:extension:fd:2.0:User:custom03'
+        'id'          = 'id'
+        'userName'    = 'userName'
+        'givenName'   = 'name.givenName'
+        'familyName'  = 'name.familyName'
+        'displayName' = 'di%splayName'
+        'nickName'    = 'nickName'
+        'emails'      = 'emails'
+        'active'      = 'active'
+        'meta'        = 'meta'
     }
 
     if ($SortBy) {
@@ -133,7 +61,6 @@
         count      = if ($Count) { $Count } else { $null }
         startIndex = if ($StartIndex) { $StartIndex } else { $null }
         filter     = if ($SearchUserName) {
-            # keep in mind regardless of used operator it will always revert back to co as per API (weird)
             "userName eq `"$SearchUserName`""
         } elseif ($SearchExternalID) {
             "externalId eq `"$SearchExternalID`""
@@ -149,7 +76,6 @@
 
     $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri 'Users' -QueryParameter $QueryParameter
     Write-Verbose -Message "Get-TribelooUser - Using query: $Uri"
-
 
     $invokeRestMethodSplat = @{
         Method      = 'Get'
@@ -222,8 +148,6 @@
             Filter        = $Filter
             SortBy        = $SortBy
             SortOrder     = $SortOrder
-            Attributes    = $Attributes
-            DirectoryID   = $DirectoryID
             Native        = $Native
         }
         Remove-EmptyValue -Hashtable $getFederatedDirectoryUserSplat
