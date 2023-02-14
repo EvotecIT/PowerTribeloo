@@ -25,8 +25,6 @@ $Configuration = @{
             # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
             Tags                       = @('Windows', 'macOS', "Linux", 'Tribeloo')
 
-            IconUri                    = 'https://www.federated.directory/assets/icons/icon-144x144.png'
-
             ProjectUri                 = 'https://github.com/EvotecIT/PowerTribeloo'
 
             RequiredModules            = @(
