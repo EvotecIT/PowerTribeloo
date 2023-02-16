@@ -18,9 +18,9 @@
 
     if (-not $Script:AuthorizationTribeloo) {
         if ($PSBoundParameters.ErrorAction -eq 'Stop') {
-            throw "No authorization found. Please run 'Connect-TribelooUser' first."
+            throw "No authorization found. Please run 'Connect-Tribeloo' first."
         } else {
-            Write-Warning -Message "Remove-TribelooUser - No authorization found. Please run 'Connect-TribelooUser' first."
+            Write-Warning -Message "Remove-TribelooUser - No authorization found. Please run 'Connect-Tribeloo' first."
             return
         }
         return

@@ -1,4 +1,4 @@
-﻿function Connect-TribelooUser {
+﻿function Connect-Tribeloo {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string] $Token,
