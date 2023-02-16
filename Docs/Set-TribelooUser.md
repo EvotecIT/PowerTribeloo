@@ -13,11 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Set-TribelooUser [[-SearchUserName] <String>] [[-Id] <String>] [[-UserName] <String>] [[-FamilyName] <Object>]
+Set-TribelooUser [[-SearchUserName] <String>] [[-Id] <String>] [[-UserName] <String>] [[-FamilyName] <String>]
  [[-GivenName] <String>] [[-DisplayName] <String>] [[-NickName] <String>] [[-EmailAddress] <String>]
- [[-Active] <Boolean>] [[-Role] <String>] [[-Custom01] <String>] [[-Custom02] <String>] [[-Custom03] <String>]
- [-Suppress] [[-Action] <String>] [[-ActionPerProperty] <IDictionary>] [-BulkProcessing] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [[-Active] <Boolean>] [-Suppress] [[-Action] <String>] [[-ActionPerProperty] <IDictionary>] [-BulkProcessing]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,7 +43,7 @@ Aliases:
 Accepted values: Overwrite, Update
 
 Required: False
-Position: 13
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -59,7 +58,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -110,51 +109,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Custom01
-{{ Fill Custom01 Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: CustomAttribute01
-
-Required: False
-Position: 10
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Custom02
-{{ Fill Custom02 Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: CustomAttribute02
-
-Required: False
-Position: 11
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Custom03
-{{ Fill Custom03 Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: CustomAttribute03
-
-Required: False
-Position: 12
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -DisplayName
 {{ Fill DisplayName Description }}
 
@@ -189,9 +143,9 @@ Accept wildcard characters: False
 {{ Fill FamilyName Description }}
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: (All)
-Aliases: FirstName
+Aliases:
 
 Required: False
 Position: 3
@@ -240,22 +194,6 @@ Aliases:
 
 Required: False
 Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Role
-{{ Fill Role Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: admin, user, contact
-
-Required: False
-Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
