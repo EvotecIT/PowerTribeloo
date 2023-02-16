@@ -11,7 +11,7 @@ Locale: en-US
 {{ Fill in the Description }}
 
 ## PowerTribeloo Cmdlets
-### [Connect-TribelooUser](Connect-TribelooUser.md)
+### [Connect-Tribeloo](Connect-Tribeloo.md)
 {{ Fill in the Synopsis }}
 
 ### [Get-TribelooUser](Get-TribelooUser.md)
