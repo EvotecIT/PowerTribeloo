@@ -74,7 +74,11 @@
     }
     Remove-EmptyValue -Hashtable $QueryParameter
 
-    $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri 'Users' -QueryParameter $QueryParameter
+    if ($ID) {
+        $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri "Users/$ID" -QueryParameter $QueryParameter
+    } else {
+        $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri 'Users' -QueryParameter $QueryParameter
+    }
     Write-Verbose -Message "Get-TribelooUser - Using query: $Uri"
 
     $invokeRestMethodSplat = @{
