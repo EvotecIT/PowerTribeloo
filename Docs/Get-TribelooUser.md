@@ -15,8 +15,7 @@ schema: 2.0.0
 ```
 Get-TribelooUser [[-Id] <String>] [[-SearchUserName] <String>] [[-SearchExternalID] <String>]
  [[-Search] <String>] [[-SearchProperty] <String>] [[-SearchOperator] <String>] [[-MaxResults] <Int32>]
- [[-StartIndex] <Int32>] [[-Count] <Int32>] [[-Filter] <String>] [[-SortBy] <String>] [[-SortOrder] <String>]
- [-Native] [<CommonParameters>]
+ [[-Filter] <String>] [[-SortBy] <String>] [[-SortOrder] <String>] [-Native] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,21 +32,6 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -Count
-{{ Fill Count Description }}
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Filter
 {{ Fill Filter Description }}
 
@@ -57,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -194,7 +178,7 @@ Aliases:
 Accepted values: id, userName, givenName, familyName, displayName, nickName, emails, addresses, meta
 
 Required: False
-Position: 10
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -210,22 +194,7 @@ Aliases:
 Accepted values: ascending, descending
 
 Required: False
-Position: 11
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -StartIndex
-{{ Fill StartIndex Description }}
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
