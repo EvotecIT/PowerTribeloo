@@ -22,7 +22,7 @@
         if ($All) {
             # lets simplify this for all
             $Users = Get-TribelooUser
-            $Remove = foreach ($U in $Users) {
+            foreach ($U in $Users) {
                 Remove-TribelooUser -Id $U.id
             }
         } else {
