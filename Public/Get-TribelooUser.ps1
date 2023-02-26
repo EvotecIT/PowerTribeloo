@@ -19,8 +19,8 @@
         [string] $SearchProperty = 'userName',
         [string] $SearchOperator = 'eq',
         [int] $MaxResults,
-        [int] $StartIndex = 1,
-        [int] $Count = 1000,
+        #[int] $StartIndex = 1,
+        #[int] $Count = 1000,
         [string] $Filter,
         [ValidateSet(
             'id',
@@ -119,7 +119,7 @@
             } else {
                 Convert-TribelooUser -Users ($BatchObjects.Resources | Select-Object -First $MaxResults)
             }
-            $LimitReached = $true
+            # $LimitReached = $true
         } else {
             # return all users that were given in a batch
             if ($Native) {
@@ -138,23 +138,23 @@
         Write-Verbose "Get-TribelooUser - No users found"
         return
     }
-    if (-not $Count -and -not $StartIndex) {
-        # paging is disabled, we don't do anything
-    } elseif (-not $LimitReached -and $BatchObjects.TotalResults -gt $BatchObjects.StartIndex + $Count) {
-        # lets get more users because there's more to get and user wanted more
-        $MaxResults = $MaxResults - $BatchObjects.Resources.Count
-        Write-Verbose "Get-TribelooUser - Processing more pages (StartIndex: $StartIndex, Count: $Count)."
-        $getFederatedDirectoryUserSplat = @{
-            Authorization = $Authorization
-            StartIndex    = $($BatchObjects.StartIndex + $Count)
-            Count         = $Count
-            MaxResults    = $MaxResults
-            Filter        = $Filter
-            SortBy        = $SortBy
-            SortOrder     = $SortOrder
-            Native        = $Native
-        }
-        Remove-EmptyValue -Hashtable $getFederatedDirectoryUserSplat
-        Get-TribelooUser @getFederatedDirectoryUserSplat
-    }
+    # if (-not $Count -and -not $StartIndex) {
+    #     # paging is disabled, we don't do anything
+    # } elseif (-not $LimitReached -and $BatchObjects.TotalResults -gt $BatchObjects.StartIndex + $Count) {
+    #     # lets get more users because there's more to get and user wanted more
+    #     $MaxResults = $MaxResults - $BatchObjects.Resources.Count
+    #     Write-Verbose "Get-TribelooUser - Processing more pages (StartIndex: $StartIndex, Count: $Count)."
+    #     $getFederatedDirectoryUserSplat = @{
+    #         Authorization = $Authorization
+    #         StartIndex    = $($BatchObjects.StartIndex + $Count)
+    #         Count         = $Count
+    #         MaxResults    = $MaxResults
+    #         Filter        = $Filter
+    #         SortBy        = $SortBy
+    #         SortOrder     = $SortOrder
+    #         Native        = $Native
+    #     }
+    #     Remove-EmptyValue -Hashtable $getFederatedDirectoryUserSplat
+    #     Get-TribelooUser @getFederatedDirectoryUserSplat
+    # }
 }
