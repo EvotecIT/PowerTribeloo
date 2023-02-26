@@ -58,9 +58,9 @@
     }
 
     $QueryParameter = @{
-        count      = if ($Count) { $Count } else { $null }
-        startIndex = if ($StartIndex) { $StartIndex } else { $null }
-        filter     = if ($SearchUserName) {
+        #count      = if ($Count) { $Count } else { $null }
+        #startIndex = if ($StartIndex) { $StartIndex } else { $null }
+        filter    = if ($SearchUserName) {
             "userName eq `"$SearchUserName`""
         } elseif ($SearchExternalID) {
             "externalId eq `"$SearchExternalID`""
@@ -69,8 +69,8 @@
         } else {
             $Filter
         }
-        sortBy     = $SortByConverted
-        sortOrder  = $SortOrder
+        sortBy    = $SortByConverted
+        sortOrder = $SortOrder
     }
     Remove-EmptyValue -Hashtable $QueryParameter
 
