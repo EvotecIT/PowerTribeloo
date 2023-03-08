@@ -7,6 +7,7 @@
         [parameter(Mandatory)][string] $DisplayName,
         [string] $NickName,
         [string] $EmailAddress,
+        [string] $Formatted,
         [switch] $Active
     )
     if (-not $Script:AuthorizationTribeloo) {
@@ -31,6 +32,14 @@
                     "value"   = $EmailAddress
                     "type"    = "work"
                     "primary" = $true
+                }
+            }
+        )
+        "addresses"   = @(
+            if ($Formatted) {
+                [ordered]@{
+                    "formatted" = $Formatted
+                    "type"      = "work"
                 }
             }
         )
