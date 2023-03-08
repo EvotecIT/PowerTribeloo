@@ -14,7 +14,8 @@ schema: 2.0.0
 
 ```
 New-TribelooUser [-UserName] <String> [[-FamilyName] <String>] [[-GivenName] <String>] [-DisplayName] <String>
- [[-NickName] <String>] [[-EmailAddress] <String>] [-Active] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [[-NickName] <String>] [[-EmailAddress] <String>] [[-Formatted] <String>] [-Active] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -101,6 +102,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Formatted
+{{ Fill Formatted Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
