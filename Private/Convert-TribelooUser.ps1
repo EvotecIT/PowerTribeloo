@@ -21,6 +21,7 @@
             NickName     = $User.'nickName'
             EmailAddress = $WorkEmail
             Active       = $User.'active'
+            Formatted    = $User.'addresses'[0].'formatted'
             Created      = $User.Meta.Created
             LastModified = $User.Meta.Updated
             Location     = $User.Meta.location
