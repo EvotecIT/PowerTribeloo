@@ -9,6 +9,7 @@
         [string] $DisplayName,
         [string] $NickName,
         [string] $EmailAddress,
+        [string] $Formatted,
         [bool] $Active,
         [switch] $Suppress,
         [ValidateSet('Overwrite', 'Update')][string] $Action = 'Update',
@@ -51,6 +52,7 @@
             NickName     = 'nickName'
             EmailAddress = 'emails[type eq "work"].value'
             Active       = 'active'
+            Formatted    = 'addresses[type eq "work"].formatted'
         }
 
         $Body = [ordered] @{
@@ -66,19 +68,7 @@
                             $Path = $Key
                         }
                         if ($null -ne $PSBoundParameters[$Key]) {
-                            if ($Key -eq 'ManagerUserName') {
-                                if ($ManagerID) {
-                                    $Value = $ManagerID
-                                } else {
-                                    $Value = $null
-                                }
-                            } elseif ($Key -eq 'ManagerDisplayName') {
-                                $Value = @{
-                                    displayName = $ManagerDisplayName
-                                }
-                            } else {
-                                $Value = $PSBoundParameters[$Key]
-                            }
+                            $Value = $PSBoundParameters[$Key]
                         } else {
                             $Value = $null
                         }
@@ -124,6 +114,14 @@
                         "value"   = $EmailAddress
                         "type"    = "work"
                         "primary" = $true
+                    }
+                }
+            )
+            "addresses"   = @(
+                if ($Formatted) {
+                    [ordered]@{
+                        "formatted" = $Formatted
+                        "type"      = "work"
                     }
                 }
             )
