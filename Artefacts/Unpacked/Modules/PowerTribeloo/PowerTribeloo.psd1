@@ -12,11 +12,11 @@
     PowerShellVersion    = '5.1'
     PrivateData          = @{
         PSData = @{
-            Tags       = @('Windows', 'macOS', 'Linux', 'Tribeloo')
-            ProjectUri = 'https://github.com/EvotecIT/PowerTribeloo'
-            RequireLicenseAcceptance = $false
+            Tags                       = @('Windows', 'macOS', 'Linux', 'Tribeloo')
+            ProjectUri                 = 'https://github.com/EvotecIT/PowerTribeloo'
+            RequireLicenseAcceptance   = $false
             ExternalModuleDependencies = @()
-}
+        }
     }
     RequiredModules      = @()
     RootModule           = 'PowerTribeloo.psm1'

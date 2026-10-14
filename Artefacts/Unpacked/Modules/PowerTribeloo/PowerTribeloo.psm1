@@ -53,8 +53,7 @@
         # Join primary url with additional path if needed
         if ($BaseUri -and $RelativeOrAbsoluteUri) {
             $Url = Join-Uri -BaseUri $BaseUri -RelativeOrAbsoluteUri $RelativeOrAbsoluteUri
-        }
-        else {
+        } else {
             $Url = $BaseUri
         }
 
@@ -73,12 +72,11 @@
         }
         if (-not $EscapeUriString) {
             $uriRequest.Uri.AbsoluteUri
-        }
-        else {
+        } else {
             [System.Uri]::EscapeUriString($uriRequest.Uri.AbsoluteUri)
         }
     }
- }
+}
 function Remove-EmptyValue {
     <#
     .SYNOPSIS
@@ -160,31 +158,24 @@ function Remove-EmptyValue {
                         if (-not $DoNotRemoveEmptyDictionary) {
                             $Hashtable.Remove($Key)
                         }
-                    }
-                    else {
+                    } else {
                         Remove-EmptyValue -Hashtable $Hashtable[$Key] -Recursive:$Recursive -ExcludeParameter $ExcludeParameter -DoNotRemoveNull:$DoNotRemoveNull -DoNotRemoveEmpty:$DoNotRemoveEmpty -DoNotRemoveEmptyArray:$DoNotRemoveEmptyArray -DoNotRemoveEmptyDictionary:$DoNotRemoveEmptyDictionary
                     }
-                }
-                else {
+                } else {
                     if (-not $DoNotRemoveNull -and $null -eq $Hashtable[$Key]) {
                         $Hashtable.Remove($Key)
-                    }
-                    elseif (-not $DoNotRemoveEmpty -and $Hashtable[$Key] -is [string] -and $Hashtable[$Key] -eq '') {
+                    } elseif (-not $DoNotRemoveEmpty -and $Hashtable[$Key] -is [string] -and $Hashtable[$Key] -eq '') {
                         $Hashtable.Remove($Key)
-                    }
-                    elseif (-not $DoNotRemoveEmptyArray -and $Hashtable[$Key] -is [System.Collections.IList] -and $Hashtable[$Key].Count -eq 0) {
+                    } elseif (-not $DoNotRemoveEmptyArray -and $Hashtable[$Key] -is [System.Collections.IList] -and $Hashtable[$Key].Count -eq 0) {
                         $Hashtable.Remove($Key)
                     }
                 }
-            }
-            else {
+            } else {
                 if (-not $DoNotRemoveNull -and $null -eq $Hashtable[$Key]) {
                     $Hashtable.Remove($Key)
-                }
-                elseif (-not $DoNotRemoveEmpty -and $Hashtable[$Key] -is [string] -and $Hashtable[$Key] -eq '') {
+                } elseif (-not $DoNotRemoveEmpty -and $Hashtable[$Key] -is [string] -and $Hashtable[$Key] -eq '') {
                     $Hashtable.Remove($Key)
-                }
-                elseif (-not $DoNotRemoveEmptyArray -and $Hashtable[$Key] -is [System.Collections.IList] -and $Hashtable[$Key].Count -eq 0) {
+                } elseif (-not $DoNotRemoveEmptyArray -and $Hashtable[$Key] -is [System.Collections.IList] -and $Hashtable[$Key].Count -eq 0) {
                     $Hashtable.Remove($Key)
                 }
             }
@@ -195,7 +186,7 @@ function Remove-EmptyValue {
             Remove-EmptyValue -Hashtable $Hashtable -Recursive:$Recursive -ExcludeParameter $ExcludeParameter -DoNotRemoveNull:$DoNotRemoveNull -DoNotRemoveEmpty:$DoNotRemoveEmpty -DoNotRemoveEmptyArray:$DoNotRemoveEmptyArray -DoNotRemoveEmptyDictionary:$DoNotRemoveEmptyDictionary
         }
     }
- }
+}
 function Join-Uri {
     <#
     .SYNOPSIS
@@ -235,7 +226,7 @@ function Join-Uri {
     return ($BaseUri.OriginalString.TrimEnd('/') + "/" + $RelativeOrAbsoluteUri.OriginalString.TrimStart('/'))
     #return [Uri]::new([Uri]::new($BaseUri), $RelativeOrAbsoluteUri).ToString()
     #return [Uri]::new($BaseUri.OriginalString, $RelativeOrAbsoluteUri).ToString()
- }
+}
 
 # PowerForge merged source begin 95e36fd0deb65dba6d786a4202f1a88d856edc3649fcff3b97ebf3eaa3200a4d
 function Convert-TribelooUser {
@@ -284,7 +275,7 @@ function Connect-Tribeloo {
         'Content-Type'  = 'application/json; charset=utf-8'
         'BaseUri'       = $Uri
     }
-    if (-not $Suppress){
+    if (-not $Suppress) {
         return $Script:AuthorizationTribeloo
     }
 }
@@ -350,15 +341,15 @@ function Get-TribelooUser {
             displayName = 'displayName'; nickName = 'nickName'; emails = 'emails'; active = 'active'; meta = 'meta'
         }
         $effectiveFilter = if ($SearchUserName) { "userName eq `"$SearchUserName`"" }
-            elseif ($SearchExternalID) { "externalId eq `"$SearchExternalID`"" }
-            elseif ($Search -and $SearchProperty) { "$($attributes[$SearchProperty]) $SearchOperator `"$Search`"" }
-            else { $Filter }
+        elseif ($SearchExternalID) { "externalId eq `"$SearchExternalID`"" }
+        elseif ($Search -and $SearchProperty) { "$($attributes[$SearchProperty]) $SearchOperator `"$Search`"" }
+        else { $Filter }
         $index = $StartIndex
         $remaining = $MaxResults
         while ($true) {
             $query = @{
-                filter = $effectiveFilter
-                sortBy = $attributes[$SortBy]
+                filter    = $effectiveFilter
+                sortBy    = $attributes[$SortBy]
                 sortOrder = $SortOrder
             }
             if (-not $Id) { $query.count = $Count; $query.startIndex = $index }
@@ -367,8 +358,8 @@ function Get-TribelooUser {
             $uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri $relative -QueryParameter $query
             Write-Verbose "Get-TribelooUser - Using query: $uri"
             $batch = Invoke-RestMethod -Method Get -Uri $uri -Headers @{
-                'Content-Type' = 'application/json; charset=utf-8'
-                Authorization = $Script:AuthorizationTribeloo.Authorization
+                'Content-Type'  = 'application/json; charset=utf-8'
+                Authorization   = $Script:AuthorizationTribeloo.Authorization
                 'Cache-Control' = 'no-cache'
             } -ErrorAction Stop -ContentType 'application/json; charset=utf-8'
             if ($Id) {
@@ -449,7 +440,7 @@ function New-TribelooUser {
         "active"      = if ($PSBoundParameters.Keys -contains ('Active')) { $Active.IsPresent } else { $Null }
     }
 
-    Try {
+    try {
         Remove-EmptyValue -Hashtable $Body -Recursive -Rerun 2
 
         # for troubleshooting
@@ -529,7 +520,7 @@ function Remove-TribelooUser {
         [switch] $Suppress,
         [parameter(ParameterSetName = 'All')][switch] $All
     )
-    Begin {
+    begin {
         if (-not $Script:AuthorizationTribeloo) {
             if ($PSBoundParameters.ErrorAction -eq 'Stop') {
                 throw "No authorization found. Please run 'Connect-Tribeloo' first."
@@ -540,7 +531,7 @@ function Remove-TribelooUser {
             return
         }
     }
-    Process {
+    process {
         if ($All) {
             # lets simplify this for all
             $Users = Get-TribelooUser
@@ -553,14 +544,14 @@ function Remove-TribelooUser {
             } elseif ($User) {
                 $RemoveID = $User.Id
             } elseif ($SearchUserName) {
-                $RemoveID = Foreach ($U in $SearchUserName) {
-                (Get-TribelooUser -UserName $U).Id
+                $RemoveID = foreach ($U in $SearchUserName) {
+                    (Get-TribelooUser -UserName $U).Id
                 }
             } else {
                 return
             }
             foreach ($I in $RemoveID) {
-                Try {
+                try {
                     if ($BulkProcessing) {
                         # Return body is used for using Invoke-FederatedDirectory to add/set/remove users in bulk
                         return [ordered] @{
@@ -644,8 +635,8 @@ function Set-TribelooUser {
     } elseif ($User) {
         $SetID = $User.Id
     } elseif ($SearchUserName) {
-        $SetID = Foreach ($U in $SearchUserName) {
-                (Get-TribelooUser -UserName $U).Id
+        $SetID = foreach ($U in $SearchUserName) {
+            (Get-TribelooUser -UserName $U).Id
         }
     } else {
         Write-Warning -Message "Set-TribelooUser - No ID or UserName specified."
@@ -740,7 +731,7 @@ function Set-TribelooUser {
             "active"      = if ($PSBoundParameters.Keys -contains ('Active')) { $Active } else { $Null }
         }
     }
-    Try {
+    try {
         Remove-EmptyValue -Hashtable $Body -Recursive -Rerun 3
 
         $MethodChosen = if ($Action -eq 'Update') { 'PATCH' } else { 'PUT' }
