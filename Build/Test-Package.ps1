@@ -1,31 +1,15 @@
-param(
-    [string] $ModuleRoot = (Join-Path $PSScriptRoot '../Artefacts/Unpacked/Modules/PowerTribeloo'),
-    [string] $ModuleName = 'PowerTribeloo'
-)
+param([string] $ModuleRoot = (Join-Path $PSScriptRoot '../Artefacts/Unpacked/Modules/PowerTribeloo'))
 $ErrorActionPreference = 'Stop'
-$env:PSModulePath = (Split-Path -Parent $ModuleRoot) + [IO.Path]::PathSeparator + (Join-Path $PSHOME 'Modules')
-Import-Module (Join-Path $ModuleRoot "$ModuleName.psd1") -Force
-$module = Get-Module $ModuleName
-& $module {
-    $script:GetCalls = 0
-    $script:FailLaterPage = $false
-    function script:Invoke-RestMethod {
-        [CmdletBinding()] param($Method, $Uri, $Headers, $ContentType)
-        $script:GetCalls++
-        if ($script:FailLaterPage -and $script:GetCalls -eq 2) { throw 'synthetic-later-page-failure' }
-        $start = [int] [regex]::Match([string] $Uri, 'startIndex=(\d+)').Groups[1].Value
-        if ($start -lt 1) { throw 'Missing page start index' }
-        $end = [math]::Min($start + 499, 1001)
-        [pscustomobject]@{ startIndex = $start; totalResults = 1001; Resources = @($start..$end | ForEach-Object { [pscustomobject]@{ id = "user-$_" } }) }
+$ModuleRoot = (Resolve-Path -LiteralPath $ModuleRoot -ErrorAction Stop).ProviderPath
+# Background jobs use the current PowerShell edition and keep synthetic handlers out of the caller's session.
+$job = Start-Job -FilePath (Join-Path $PSScriptRoot 'Tests/Assert-Package.ps1') -ArgumentList $ModuleRoot
+try {
+    if (-not (Wait-Job -Job $job -Timeout 120)) {
+        throw 'Package validation did not finish within 120 seconds.'
     }
-    $null = Connect-Tribeloo -Token synthetic -Uri 'https://tenant.example/scim/v2/'
-    $users = @(Get-TribelooUser -Native -ErrorAction Stop)
-    if ($users.Count -ne 1001 -or $users[-1].id -ne 'user-1001' -or $script:GetCalls -ne 3) { throw 'Packaged Tribeloo pagination was incomplete' }
-    $script:GetCalls = 0
-    $script:FailLaterPage = $true
-    $failed = $false
-    try { $users = @(Get-TribelooUser -Native -ErrorAction Stop) }
-    catch { $failed = $_.Exception.Message -eq 'synthetic-later-page-failure' }
-    if (-not $failed -or $script:GetCalls -ne 2) { throw 'Packaged Tribeloo strict pagination failed' }
+    Receive-Job -Job $job -ErrorAction Stop
+    if ($job.State -ne 'Completed') { throw 'Package validation failed.' }
+} finally {
+    if ($job.State -eq 'Running') { Stop-Job -Job $job }
+    Remove-Job -Job $job
 }
-[pscustomobject]@{ Module = $ModuleName; Version = [string] $module.Version; PowerShell = [string] $PSVersionTable.PSVersion; PaginationAndStrictFailure = 'PASS'; ExternalCalls = 0 } | ConvertTo-Json
