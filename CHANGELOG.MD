@@ -1,5 +1,6 @@
 ## 0.0.3
 
+- Keep generated ZIPs and unpacked modules out of source control; build and release commands generate them locally.
 - Standardize native Manifest, Build and Publish modes, retain the RunMode alias and add CI checks for source tests and packaged behavior on PowerShell 5.1 and 7.
 
 - Retrieve every SCIM user page, including a final user after a full 1,000-user page.
