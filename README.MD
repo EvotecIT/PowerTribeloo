@@ -72,3 +72,7 @@ Set-TribelooUser -Id '11105df0-31cf-11ed-ada4-2bbc677ce86d' -DisplayName 'New na
 Remove-TribelooUser -Id '11105df0-31cf-11ed-ada4-2bbc677ce86d' -Verbose
 ```
 
+
+### Complete retrieval and errors
+
+`Get-TribelooUser` follows every SCIM user page. `-Count` selects the requested page size and `-MaxResults` limits the total output. Filters and sorting apply to every page. Use `-ErrorAction Stop` when a complete result is required; a failed later page then terminates the command. Other callers receive a warning and any users already returned.

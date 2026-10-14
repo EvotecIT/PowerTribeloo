@@ -1,4 +1,17 @@
-﻿function Get-TribelooUser {
+function Get-TribelooUser {
+    <#
+    .SYNOPSIS
+    Retrieves Tribeloo users across every SCIM response page.
+    .PARAMETER StartIndex
+    One-based index of the first user to request.
+    .PARAMETER Count
+    Requested page size. A smaller server page still advances by its returned size.
+    .PARAMETER MaxResults
+    Maximum total users to return. Zero retrieves all users.
+    .EXAMPLE
+    Get-TribelooUser -ErrorAction Stop
+    Stops on a failed or incomplete page so synchronization can reject partial results.
+    #>
     [CmdletBinding()]
     param(
         [string] $Id,
@@ -19,8 +32,6 @@
         [string] $SearchProperty = 'userName',
         [string] $SearchOperator = 'eq',
         [int] $MaxResults,
-        #[int] $StartIndex = 1,
-        #[int] $Count = 1000,
         [string] $Filter,
         [ValidateSet(
             'id',
@@ -35,126 +46,62 @@
         )]
         [string] $SortBy,
         [ValidateSet('ascending', 'descending')][string] $SortOrder,
-        [switch] $Native
+        [switch] $Native,
+        [ValidateRange(1, 2147483647)][int] $StartIndex = 1,
+        [ValidateRange(1, 2147483647)][int] $Count = 1000
     )
-    if (-not $Script:AuthorizationTribeloo) {
-        return
-    }
-
-    $ConvertAttributes = @{
-        'id'          = 'id'
-        'userName'    = 'userName'
-        'givenName'   = 'name.givenName'
-        'familyName'  = 'name.familyName'
-        'displayName' = 'di%splayName'
-        'nickName'    = 'nickName'
-        'emails'      = 'emails'
-        'active'      = 'active'
-        'meta'        = 'meta'
-    }
-
-    if ($SortBy) {
-        $SortByConverted = $ConvertAttributes[$SortBy]
-    }
-
-    $QueryParameter = @{
-        #count      = if ($Count) { $Count } else { $null }
-        #startIndex = if ($StartIndex) { $StartIndex } else { $null }
-        filter    = if ($SearchUserName) {
-            "userName eq `"$SearchUserName`""
-        } elseif ($SearchExternalID) {
-            "externalId eq `"$SearchExternalID`""
-        } elseif ($Search -and $SearchProperty) {
-            "$($ConvertAttributes[$SearchProperty]) $SearchOperator `"$Search`""
-        } else {
-            $Filter
-        }
-        sortBy    = $SortByConverted
-        sortOrder = $SortOrder
-    }
-    Remove-EmptyValue -Hashtable $QueryParameter
-
-    if ($ID) {
-        $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri "Users/$ID" -QueryParameter $QueryParameter
-    } else {
-        $Uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri 'Users' -QueryParameter $QueryParameter
-    }
-    Write-Verbose -Message "Get-TribelooUser - Using query: $Uri"
-
-    $invokeRestMethodSplat = @{
-        Method      = 'Get'
-        Uri         = $Uri
-        Headers     = [ordered]  @{
-            'Content-Type'  = 'application/json; charset=utf-8'
-            'Authorization' = $Script:AuthorizationTribeloo.Authorization
-            'Cache-Control' = 'no-cache'
-        }
-        ErrorAction = 'Stop'
-        ContentType = 'application/json; charset=utf-8'
-    }
-
     try {
-        $BatchObjects = Invoke-RestMethod @invokeRestMethodSplat
+        if (-not $Script:AuthorizationTribeloo) { throw "No authorization found. Run Connect-Tribeloo first." }
+        $attributes = @{
+            id = 'id'; userName = 'userName'; givenName = 'name.givenName'; familyName = 'name.familyName'
+            displayName = 'displayName'; nickName = 'nickName'; emails = 'emails'; active = 'active'; meta = 'meta'
+        }
+        $effectiveFilter = if ($SearchUserName) { "userName eq `"$SearchUserName`"" }
+            elseif ($SearchExternalID) { "externalId eq `"$SearchExternalID`"" }
+            elseif ($Search -and $SearchProperty) { "$($attributes[$SearchProperty]) $SearchOperator `"$Search`"" }
+            else { $Filter }
+        $index = $StartIndex
+        $remaining = $MaxResults
+        while ($true) {
+            $query = @{
+                filter = $effectiveFilter
+                sortBy = $attributes[$SortBy]
+                sortOrder = $SortOrder
+            }
+            if (-not $Id) { $query.count = $Count; $query.startIndex = $index }
+            Remove-EmptyValue -Hashtable $query
+            $relative = if ($Id) { "Users/$Id" } else { 'Users' }
+            $uri = Join-UriQuery -BaseUri $Script:AuthorizationTribeloo.BaseUri -RelativeOrAbsoluteUri $relative -QueryParameter $query
+            Write-Verbose "Get-TribelooUser - Using query: $uri"
+            $batch = Invoke-RestMethod -Method Get -Uri $uri -Headers @{
+                'Content-Type' = 'application/json; charset=utf-8'
+                Authorization = $Script:AuthorizationTribeloo.Authorization
+                'Cache-Control' = 'no-cache'
+            } -ErrorAction Stop -ContentType 'application/json; charset=utf-8'
+            if ($Id) {
+                if (-not $batch.id) { throw 'Tribeloo returned an invalid single-user response.' }
+                if ($Native) { $batch } else { Convert-TribelooUser -Users $batch }
+                return
+            }
+            $names = if ($batch -is [Collections.IDictionary]) { @($batch.Keys) } else { @($batch.PSObject.Properties.Name) }
+            if ($names -notcontains 'Resources' -or $null -eq $batch.totalResults -or $batch.totalResults -lt 0) { throw 'Tribeloo returned an invalid user list response.' }
+            $users = @($batch.Resources | Where-Object { $null -ne $_ })
+            if ($users.Count -eq 0) {
+                if ($batch.totalResults -ge $index) { throw 'Tribeloo returned an empty page before the declared total was retrieved.' }
+                return
+            }
+            $pageStart = if ($null -ne $batch.startIndex) { [long] $batch.startIndex } else { [long] $index }
+            if ($pageStart -ne $index) { throw 'Tribeloo pagination did not advance to the requested startIndex.' }
+            $selected = if ($MaxResults -gt 0) { @($users | Select-Object -First $remaining) } else { $users }
+            if ($Native) { $selected } else { Convert-TribelooUser -Users $selected }
+            if ($MaxResults -gt 0) { $remaining -= $selected.Count; if ($remaining -le 0) { return } }
+            $next = $pageStart + $users.Count
+            if ($next -gt $batch.totalResults) { return }
+            if ($next -le $index -or $next -gt [int]::MaxValue) { throw 'Tribeloo pagination did not advance. A complete result could not be retrieved.' }
+            $index = [int] $next
+        }
     } catch {
-        if ($PSBoundParameters.ErrorAction -eq 'Stop') {
-            throw
-        } else {
-            $ErrorDetails = $_.ErrorDetails.Message | ConvertFrom-Json -ErrorAction SilentlyContinue
-            if ($ErrorDetails.Detail -like '*already exists*directory*') {
-                Write-Warning -Message "Get-TribelooUser - $($ErrorDetails.Detail) [UserName: $UserName / ID: $ID]"
-                return
-            } else {
-                Write-Warning -Message "Get-TribelooUser - Error $($_.Exception.Message), $($ErrorDetails.Detail)"
-                return
-            }
-        }
+        if ($ErrorActionPreference -eq [Management.Automation.ActionPreference]::Stop) { throw }
+        Write-Warning "Get-TribelooUser - $($_.Exception.Message)"
     }
-    if ($BatchObjects.Resources) {
-        Write-Verbose -Message "Get-TribelooUser - Got $($BatchObjects.Resources.Count) users (StartIndex: $StartIndex, Count: $Count). Starting to process them."
-
-        if ($MaxResults -gt 0 -and $BatchObjects.Resources.Count -ge $MaxResults) {
-            # return users if amount of users available is more than we wanted
-            if ($Native) {
-                $BatchObjects.Resources | Select-Object -First $MaxResults
-            } else {
-                Convert-TribelooUser -Users ($BatchObjects.Resources | Select-Object -First $MaxResults)
-            }
-            # $LimitReached = $true
-        } else {
-            # return all users that were given in a batch
-            if ($Native) {
-                $BatchObjects.Resources
-            } else {
-                Convert-TribelooUser -Users $BatchObjects.Resources
-            }
-        }
-    } elseif ($BatchObjects.Schemas -and $BatchObjects.id) {
-        if ($Native) {
-            $BatchObjects
-        } else {
-            Convert-TribelooUser -Users $BatchObjects
-        }
-    } else {
-        Write-Verbose "Get-TribelooUser - No users found"
-        return
-    }
-    # if (-not $Count -and -not $StartIndex) {
-    #     # paging is disabled, we don't do anything
-    # } elseif (-not $LimitReached -and $BatchObjects.TotalResults -gt $BatchObjects.StartIndex + $Count) {
-    #     # lets get more users because there's more to get and user wanted more
-    #     $MaxResults = $MaxResults - $BatchObjects.Resources.Count
-    #     Write-Verbose "Get-TribelooUser - Processing more pages (StartIndex: $StartIndex, Count: $Count)."
-    #     $getFederatedDirectoryUserSplat = @{
-    #         Authorization = $Authorization
-    #         StartIndex    = $($BatchObjects.StartIndex + $Count)
-    #         Count         = $Count
-    #         MaxResults    = $MaxResults
-    #         Filter        = $Filter
-    #         SortBy        = $SortBy
-    #         SortOrder     = $SortOrder
-    #         Native        = $Native
-    #     }
-    #     Remove-EmptyValue -Hashtable $getFederatedDirectoryUserSplat
-    #     Get-TribelooUser @getFederatedDirectoryUserSplat
-    # }
 }
